@@ -3,16 +3,16 @@
 using namespace std;
 
 
-struct Node {
-    Book book;
-    Node* left;
-    Node* right;
-};
-
 struct Book {
     int id;
     string title;
     string author;
+};
+
+struct Node {
+    Book book;
+    Node* left;
+    Node* right;
 };
 
 class LibraryBST {};
