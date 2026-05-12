@@ -1,4 +1,5 @@
 #include "LibraryBST.h"
+#include <string>
 
 LibraryBST::LibraryBST() {
 	cout << "LibraryBST constructor called" << endl;
@@ -37,82 +38,73 @@ Node* LibraryBST::insertBook(Book book, Node* node) {
 	return node;
 }
 
-Node* LibraryBST::searchBook(int id, Node* node, bool mustEqual) {
-	if (id == node->book.id) return node;
-	else if (id > node->book.id) {
-		if (node->right == nullptr && !mustEqual) {
-			return node;
-		}
-		searchBook(id, node->right);
-	}
-	else if (id < node->book.id) {
-		if (node->left == nullptr && !mustEqual) { 
-			return node;
-		}
-		searchBook(id, node->left);
-	}
-}
-
-Node* LibraryBST::getPredecessor(int id, Node* result) {
-	if (result == nullptr) {
-		Node* target = searchBook(id, getRoot(), true);
-		if (target->left != nullptr) result = getPredecessor(id, target->left);
-		else return nullptr;
-	}
-	else {
-		if (result->right != nullptr) result = getPredecessor(id, result->right);
-		else return result;
-	}
-	return result;
-}
-
-Node* LibraryBST::getParent(int id, Node* node) {
-	if (node->right->book.id == id || node->left->book.id == id) return node;
-	else if (id > node->book.id) getParent(id, node->right);
-	else if (id < node->book.id) getParent(id, node->left);
+Node* LibraryBST::searchBook(int id, Node* node) {
+	if (node == nullptr) return nullptr;
+	else if (id == node->book.id) return node;
+	else if (id > node->book.id) return searchBook(id, node->right);
+	else if (id < node->book.id) return searchBook(id, node->left);
 	return node;
 }
 
-void LibraryBST::deleteBook(int id, Node* node) {
-	if (node->book.id == id) {
+int LibraryBST::closestID(int target, int& closest, Node* node) {
+	if (node == nullptr) return -1;
+
+	if (abs(node->book.id - target) < abs(closest - target))
+		closest = node->book.id;
+
+	if (target < node->book.id) {
+		if (node->left != nullptr) return closestID(target, closest, node->left);
+	}
+	else if (target > node->book.id) {
+		if (node->right != nullptr) return closestID(target, closest, node->right);
+	}
+
+	return closest;
+}
+
+Node* LibraryBST::getPredecessor(Node* node) {
+	Node* current = node->left;
+	while (current->right != nullptr) {
+		current = current->right;
+	}
+	return current;
+}
+
+Node* LibraryBST::deleteBook(int id, Node* node) {
+	if (node == nullptr) return nullptr;
+	else if (node->book.id == id) {
 		// No children
 		if (node->right == nullptr && node->left == nullptr) {
-			Node* parent = getParent(node->book.id, getRoot());
-			if (node->book.id > parent->book.id) parent->right = nullptr;
-			else parent->left = nullptr;
 			delete node;
+			return nullptr;
 		}
 
 		// One left child
 		else if (node->right == nullptr && node->left != nullptr) {
-			Node* parent = getParent(node->book.id, getRoot());
-			if (node->book.id > parent->book.id) parent->right = node->left;
-			else parent->left = node->left;
+			Node* temp = node->left;
 			delete node;
+			return temp;
 		}
 
 		// One right child
 		else if (node->right != nullptr && node->left == nullptr) {
-			Node* parent = getParent(node->book.id, getRoot());
-			if (node->book.id > parent->book.id) parent->right = node->right;
-			else parent->left = node->right;
+			Node* temp = node->right;
 			delete node;
+			return temp;
 		}
 
 		// Two children
 		else if (node->right != nullptr && node->left != nullptr) {
-			Node* pred = getPredecessor(id);
-			Node* predParent = getParent(pred->book.id, getRoot());
+			Node* pred = getPredecessor(node);
 			node->book = pred->book;
-			deleteBook(pred->book.id, node->left);
+			node->left = deleteBook(pred->book.id, node->left);
 		}
-		return;
 	}
 	else {
-		if (id > node->book.id) deleteBook(id, node->right);
-		else if (id < node->book.id) deleteBook(id, node->left);
+		if (id > node->book.id) node->right = deleteBook(id, node->right);
+		else if (id < node->book.id) node->left = deleteBook(id, node->left);
 	}
-	return;
+	return node;
 }
 
 void LibraryBST::inorder(Node* node) {
