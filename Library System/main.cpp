@@ -61,6 +61,23 @@ void testBST() {
     bst2.inorder(bst2.getRoot());
 
     cout << "Height: " << bst2.treeHeight() << endl;
+
+    cout << "\n\n";
+
+    Node* node = bst1.searchBook(90, bst1.getRoot());
+
+    if (node == nullptr) {
+        int id = bst1.closestID(90, bst1.getRoot()->book.id, bst1.getRoot());
+
+        if (id == -1) cout << "No books found with that ID." << endl;
+        else cout << "Closest match: " << id << endl;
+    }
+    else if (node->book.id == 90) {
+        cout << "Found book: " << node->book.title << endl;
+    }
+    
+    bst1.deleteBook(12, bst1.getRoot());
+    printBST(&bst1, "BST after deleting ID 12 (Has 2 children):");
 }
 
 // =====================================================
