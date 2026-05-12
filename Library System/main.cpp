@@ -113,6 +113,34 @@ void testAVL() {
     avl2.inorderTraversal();
 
     cout << "Height: " << avl2.treeHeight() << endl;
+
+    cout << "\n\n";
+
+    cout << "\nSearch existing ID 67:\n";
+    if (avl1.search(67))
+        cout << "Found book with ID 67" << endl;
+
+    // Search + closest test
+    cout << "\nSearch existing ID 90:\n";
+    if (avl1.search(90)) {
+        cout << "Found book with ID 90" << endl;
+    }
+    else {
+        int id = avl1.closestID(90);
+
+        if (id == -1)
+            cout << "No books found with that ID." << endl;
+        else
+            cout << "Closest match: " << id << endl;
+    }
+
+    // Delete test
+    avl1.remove(12);
+
+    if (!avl1.search(12))
+        cout << "ID 12 deleted successfully\n";
+
+    printAVL(&avl1, "AVL after deleting ID 12 (Has 2 children):");
 }
 
 // =====================================================
