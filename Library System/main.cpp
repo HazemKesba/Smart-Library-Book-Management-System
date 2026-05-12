@@ -4,73 +4,106 @@
 
 using namespace std;
 
-int main()
-{
-	// ================= BST TEST =================
-	cout << "========== BST TEST ==========\n";
+// =====================================================
+// Helpers
+// =====================================================
 
-	LibraryBST* libraryBST = new LibraryBST();
+void printBST(LibraryBST* bst, const string& title) {
+    cout << "\n" << title << "\n";
+    bst->inorder(bst->getRoot());
 
-	Book book1 = {100, "Hello boy", "Mike Max"};
-	libraryBST->insertBook(book1);
+    cout << "Height: " << bst->treeHeight() << endl;
 
-	Book book2 = {103, "Can not see light", "Sam Samuel"};
-	libraryBST->insertBook(book2, libraryBST->getRoot());
+    cout << "Range 20 -> 70:\n";
+    bst->inrange(20, 70, bst->getRoot());
+}
 
-	Book book3 = {90, "Black George", "Mark Rim"};
-	libraryBST->insertBook(book3, libraryBST->getRoot());
+void printAVL(LibraryAVL* avl, const string& title) {
+    cout << "\n" << title << "\n";
+    avl->inorderTraversal();
 
-	cout << "Books in range 80 -> 102:\n";
-	libraryBST->inrange(80, 102, libraryBST->getRoot());
+    cout << "Height: " << avl->treeHeight() << endl;
 
-	delete libraryBST;
+    cout << "Range 20 -> 70:\n";
+    avl->rangeSearch(20, 70);
+}
 
+// =====================================================
+// BST Tests
+// =====================================================
 
-	// ================= AVL TEST =================
-	cout << "\n\n========== AVL TEST ==========\n";
+void testBST() {
+    cout << "\n================ BST TEST ================\n";
 
-	LibraryAVL* libraryAVL = new LibraryAVL();
+    Book bstRandom[20] = {
+        {45,"A","A1"}, {12,"B","A2"}, {78,"C","A3"}, {3,"D","A4"}, {67,"E","A5"},
+        {23,"F","A6"}, {89,"G","A7"}, {34,"H","A8"}, {56,"I","A9"}, {1,"J","A10"},
+        {99,"K","A11"}, {10,"L","A12"}, {41,"M","A13"}, {72,"N","A14"}, {28,"O","A15"},
+        {60,"P","A16"}, {5,"Q","A17"}, {38,"R","A18"}, {84,"S","A19"}, {50,"T","A20"}
+    };
 
-	Book a1 = {30, "C++", "Bjarne"};
-	Book a2 = {20, "Algorithms", "CLRS"};
-	Book a3 = {40, "Python", "Guido"};
-	Book a4 = {10, "Java", "James"};
-	Book a5 = {25, "OS", "Tanenbaum"};
-	Book a6 = {50, "DB", "Elmasri"};
-	Book a7 = {5, "Networks", "Kurose"};
+    // Random BST
+    LibraryBST bst1;
+    for (auto& b : bstRandom)
+        bst1.insertBook(b);
 
-	libraryAVL->insert(a1);
-	libraryAVL->insert(a2);
-	libraryAVL->insert(a3);
-	libraryAVL->insert(a4);
-	libraryAVL->insert(a5);
-	libraryAVL->insert(a6);
-	libraryAVL->insert(a7);
+    printBST(&bst1, "BST Inorder (Random)");
 
-	cout << "\nInorder Traversal:\n";
-	libraryAVL->inorderTraversal();
+    // Sorted BST
+    cout << "\nBST (SORTED INSERTION CASE)\n";
 
-	cout << "\nTree Height: " << libraryAVL->treeHeight() << endl;
+    LibraryBST bst2;
+    for (int i = 1; i <= 20; i++) {
+        bst2.insertBook({ i, "Book", "Author" });
+    }
 
-	cout << "\nSearch 25:\n";
-	if (libraryAVL->search(25))
-		cout << "Found\n";
-	else
-		cout << "Not Found\n";
+    cout << "\nBST Inorder (Sorted):\n";
+    bst2.inorder(bst2.getRoot());
 
-	cout << "\nRange Search 15 -> 35:\n";
-	libraryAVL->rangeSearch(15, 35);
+    cout << "Height: " << bst2.treeHeight() << endl;
+}
 
-	cout << "\nClosest ID to 27: ";
-	cout << libraryAVL->closestID(27) << endl;
+// =====================================================
+// AVL Tests
+// =====================================================
 
-	cout << "\nDelete ID 20\n";
-	libraryAVL->remove(20);
+void testAVL() {
+    cout << "\n================ AVL TEST ================\n";
 
-	cout << "\nAfter Delete:\n";
-	libraryAVL->inorderTraversal();
+    Book avlRandom[20] = {
+        {45,"A","A1"}, {12,"B","A2"}, {78,"C","A3"}, {3,"D","A4"}, {67,"E","A5"},
+        {23,"F","A6"}, {89,"G","A7"}, {34,"H","A8"}, {56,"I","A9"}, {1,"J","A10"},
+        {99,"K","A11"}, {10,"L","A12"}, {41,"M","A13"}, {72,"N","A14"}, {28,"O","A15"},
+        {60,"P","A16"}, {5,"Q","A17"}, {38,"R","A18"}, {84,"S","A19"}, {50,"T","A20"}
+    };
 
-	delete libraryAVL;
+    // Random AVL
+    LibraryAVL avl1;
+    for (auto& b : avlRandom)
+        avl1.insert(b);
 
-	return 0;
+    printAVL(&avl1, "AVL Inorder (Random)");
+
+    // Sorted AVL
+    cout << "\nAVL (SORTED INSERTION CASE)\n";
+
+    LibraryAVL avl2;
+    for (int i = 1; i <= 20; i++) {
+        avl2.insert({ i, "Book", "Author" });
+    }
+
+    cout << "\nAVL Inorder (Sorted):\n";
+    avl2.inorderTraversal();
+
+    cout << "Height: " << avl2.treeHeight() << endl;
+}
+
+// =====================================================
+// Main
+// =====================================================
+
+int main() {
+    testBST();
+    testAVL();
+    return 0;
 }

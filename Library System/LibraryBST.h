@@ -21,4 +21,6 @@ public:
 	void inorder(Node* node);
 	void inrange(int minId, int maxId, Node* node);
 	void clear(Node* root);
+	int treeHeight(Node* node);
+	int treeHeight();
 };

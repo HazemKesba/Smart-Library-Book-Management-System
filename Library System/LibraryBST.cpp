@@ -140,3 +140,20 @@ void LibraryBST::clear(Node* node) {
 	clear(node->right);
 	delete node;
 }
+
+
+int LibraryBST::treeHeight(Node* node)
+{
+	if (node == nullptr)
+		return 0;
+
+	int leftH = treeHeight(node->left);
+	int rightH = treeHeight(node->right);
+
+	return 1 + max(leftH, rightH);
+}
+
+int LibraryBST::treeHeight()
+{
+	return treeHeight(root);
+}
