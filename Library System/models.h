@@ -11,6 +11,6 @@ struct Book {
 
 struct Node {
 	Book book;
-	Node* left;
-	Node* right;
+	Node* left = nullptr;
+	Node* right = nullptr;
 };
